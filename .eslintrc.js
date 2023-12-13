@@ -1,5 +1,13 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: 杭
+ * @Date: 2023-12-13 14:01:42
+ * @LastEditors: 杭
+ * @LastEditTime: 2023-12-13 17:48:46
+ */
 module.exports = {
-  root: true,
+  root: false,
   env: {
     node: true
   },

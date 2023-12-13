@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   StyledBarCode,
   StyledCircle,
@@ -22,6 +23,7 @@ import { AutoSplitText } from '@/components/Viewer/auto-split-text'
 const { COMMON_SCALE, AUTO_PAGE_COMPONENT } = CONFIG
 
 const componentToStyled = {
+  // 定义一个对象，用于存储组件和样式之间的映射关系
   RoyText: StyledText,
   RoyTextIn: StyledText,
   RoySimpleText: StyledSimpleText,
@@ -38,18 +40,31 @@ const componentToStyled = {
 }
 
 const componentToClassName = {
+  // RoyText：渲染的 RoyText 类名
   RoyText: 'rendered-roy-text',
+  // RoyTextIn：渲染的 RoyTextIn 类名
   RoyTextIn: 'rendered-roy-text-in',
+  // RoySimpleText：渲染的 RoySimpleText 类名
   RoySimpleText: 'rendered-roy-simple-text',
+  // RoySimpleTextIn：渲染的 RoySimpleTextIn 类名
   RoySimpleTextIn: 'rendered-roy-simple-text-in',
+  // RoyCircle：渲染的 RoyCircle 类名
   RoyCircle: 'rendered-roy-circle',
+  // RoyLine：渲染的 RoyLine 类名
   RoyLine: 'rendered-roy-line',
+  // RoyRect：渲染的 RoyRect 类名
   RoyRect: 'rendered-roy-rect',
+  // RoyStar：渲染的 RoyStar 类名
   RoyStar: 'rendered-roy-star',
+  // RoySimpleTable：渲染的 RoySimpleTable 类名
   RoySimpleTable: 'rendered-roy-simple-table',
+  // RoyComplexTable：渲染的 RoyComplexTable 类名
   RoyComplexTable: 'rendered-roy-complex-table',
+  // RoyImage：渲染的 RoyImage 类名
   RoyImage: 'rendered-roy-image',
+  // RoyQRCode：渲染的 RoyQRCode 类名
   RoyQRCode: 'rendered-roy-qrcode',
+  // RoyBarCode：渲染的 RoyBarCode 类名
   RoyBarCode: 'rendered-roy-barcode'
 }
 
@@ -63,12 +78,20 @@ class BasePageGenerator {
     this.dataSet = dataSet
     // 数据源信息
     this.dataSource = dataSource
-    const { pageWidth, pageHeight, pageMarginBottom, pageMarginTop, pageDirection, pageLayout } =
-      pagerConfig
+    const {
+      pageWidth,
+      pageHeight,
+      pageMarginBottom,
+      pageMarginTop,
+      pageDirection,
+      pageLayout
+    } = pagerConfig
     // 页面宽度(mm)
-    this.pageWidth = (pageDirection === 'p' ? pageWidth : pageHeight) * COMMON_SCALE
+    this.pageWidth =
+      (pageDirection === 'p' ? pageWidth : pageHeight) * COMMON_SCALE
     // 页面高度(mm)
-    this.pageHeight = (pageDirection === 'p' ? pageHeight : pageWidth) * COMMON_SCALE
+    this.pageHeight =
+      (pageDirection === 'p' ? pageHeight : pageWidth) * COMMON_SCALE
     // 真实的下边距(px)
     this.realPageMarginBottom = pageMarginBottom * COMMON_SCALE
     // 真实的上边距(px)
@@ -77,7 +100,8 @@ class BasePageGenerator {
     this.maxPageUseHeight = this.pageHeight - this.realPageMarginBottom
     // 页面布局方式
     this.pageLayout = pageLayout
-    const { background, color, fontSize, fontFamily, lineHeight } = this.pagerConfig
+    const { background, color, fontSize, fontFamily, lineHeight } =
+      this.pagerConfig
     // 页面样式
     this.pageDefaultStyle = `
       width: ${this.pageWidth}px;
@@ -107,12 +131,14 @@ class BasePageGenerator {
     return {
       pageIndex,
       init: () => {
+        // 如果存在，则移除
         if (element !== null) {
           if (document.body.contains(element)) {
             document.body.removeChild(element)
           }
           element = null
         }
+        // 创建一个div
         element = document.createElement('div')
         element.style = `
           ${this.pageDefaultStyle}
@@ -122,35 +148,46 @@ class BasePageGenerator {
         `
       },
       mount: async () => {
+        // 如果元素不存在，则返回
         if (element === null) {
           console.info('element has been removed.')
           return
         }
+        // 将元素添加到body中
         document.body.appendChild(element)
+        // 等待渲染完成
         await RenderUtil.wait()
       },
       appendChild: async (childEle) => {
+        // 如果元素不存在，则返回
         if (element === null) {
           console.info('element has been removed.')
           return
         }
+        // 将子元素添加到元素中
         element.appendChild(childEle)
+        // 等待渲染完成
         await RenderUtil.wait()
       },
       appendHTML: async (html) => {
+        // 如果元素不存在，则返回
         if (element === null) {
           console.info('element has been removed.')
           return
         }
+        // 将html添加到元素中
         element.insertAdjacentHTML('beforeend', html)
+        // 等待渲染完成
         await RenderUtil.wait()
       },
       unmount: () => {
+        // 如果元素存在，则从body中移除
         if (document.body.contains(element)) {
           document.body.removeChild(element)
         }
       },
       remove: () => {
+        // 如果元素存在，则从body中移除
         if (element === null) {
           console.info('element has been removed.')
           return
@@ -161,6 +198,7 @@ class BasePageGenerator {
         element = null
       },
       removeChild: (childEle) => {
+        // 如果元素存在，则从元素中移除子元素
         if (element === null) {
           console.info('element has been removed.')
           return
@@ -168,6 +206,7 @@ class BasePageGenerator {
         element.removeChild(childEle)
       },
       getPageHTML: () => {
+        // 如果元素存在，则返回html
         if (element === null) {
           console.info('element has been removed.')
           return ''
@@ -186,41 +225,59 @@ class BasePageGenerator {
   }
 
   getPage(pageNumber = 1) {
+    // 如果当前页不存在，则创建一个临时页
     if (!this.pages[pageNumber]) {
       const newPage = this.createTempPage(pageNumber)
+      // 初始化临时页
       newPage.init()
+      // 将临时页添加到pages中
       this.pages[Number(pageNumber)] = newPage
     }
+    // 返回当前页
     return this.pages[pageNumber]
   }
 
   getPageHTML() {
+    // 将pages中的页码排序
     const pageNums = Object.keys(this.pages).sort((a, b) => {
       return +a - +b
     })
     let pageContent = ''
+    // 遍历pages中的页码
     for (let pageNum of pageNums) {
+      // 获取当前页
       let page = this.pages[pageNum]
+      // 获取当前页的html
       pageContent += page.getPageHTML()
+      // 删除当前页
       page.remove()
     }
+    // 返回html
     return pageContent
   }
 
+  // async函数，用于渲染页面
   async render() {
+    // 定义三个数组，用于存放不同的元素
     let uniqueElements = []
     let repeatElements = []
     let fixedElements = []
+    // 定义一个对象，用于存放元素的位置信息
     let elementIdToPosition = {}
+    // 定义一个对象，用于存放元素的位置信息
     let yPixelSortMap = {}
+    // 遍历渲染元素数组
     for (let i = 0; i < this.renderElements.length; i++) {
       const curElement = this.renderElements[i]
       const { id } = curElement
       const { ty } = curElement.position || { ty: Infinity }
       curElement.index = i
+      // 将元素的位置信息存入对象中
       elementIdToPosition[id] = curElement.position || {}
+      // 将元素的位置信息存入对象中
       yPixelSortMap[Number(ty)] = [...(yPixelSortMap[ty] || []), curElement]
     }
+    // 对yPixelSortMap对象进行排序
     Object.keys(yPixelSortMap)
       .sort((a, b) => {
         return +a - +b
@@ -230,6 +287,7 @@ class BasePageGenerator {
           const {
             style: { elementPosition = 'default' }
           } = comp
+          // 将元素的位置信息存入不同的数组中
           if (elementPosition === 'default') {
             uniqueElements.push(comp)
           } else if (elementPosition === 'fixed') {
@@ -239,10 +297,13 @@ class BasePageGenerator {
           }
         })
       })
+    // 渲染唯一元素
     await this.renderUniqueElement(uniqueElements)
+    // 渲染固定元素
     await this.renderFixedElement(fixedElements)
     // 最后渲染重复元素
     await this.renderRepeatElement(repeatElements)
+    // 返回页面HTML
     return this.getPageHTML()
   }
 
@@ -260,7 +321,10 @@ class BasePageGenerator {
       const curElement = repeatElements[i]
       const { component } = curElement
       pages.map(async (page) => {
-        await this[`render${component}`]({ component: curElement, pageNumber: page })
+        await this[`render${component}`]({
+          component: curElement,
+          pageNumber: page
+        })
       })
     }
   }
@@ -269,7 +333,10 @@ class BasePageGenerator {
     for (let i = 0; i < fixedElements.length; i++) {
       const curElement = fixedElements[i]
       const { component } = curElement
-      await this[`render${component}`]({ component: curElement, pageNumber: pageNum })
+      await this[`render${component}`]({
+        component: curElement,
+        pageNumber: pageNum
+      })
     }
   }
 
@@ -284,7 +351,10 @@ class BasePageGenerator {
         this.dataSource
       )
     }
-    let newElement = this.generateNewElementWithStyledComponent(component, index)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      index
+    )
     newElement.innerHTML = `<div class="roy-simple-text-inner">${afterPropValue}</div>`
     return {
       element: newElement,
@@ -294,7 +364,10 @@ class BasePageGenerator {
 
   generateRoyLine(component) {
     const { index, style } = component
-    let newElement = this.generateNewElementWithStyledComponent(component, index)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      index
+    )
     return {
       element: newElement,
       style
@@ -303,7 +376,10 @@ class BasePageGenerator {
 
   generateRoyRect(component) {
     const { index, style } = component
-    let newElement = this.generateNewElementWithStyledComponent(component, index)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      index
+    )
     return {
       element: newElement,
       style
@@ -312,7 +388,10 @@ class BasePageGenerator {
 
   generateRoyQRCode(component) {
     const { index, style } = component
-    let newElement = this.generateNewElementWithStyledComponent(component, index)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      index
+    )
     let img = document.createElement('img')
     img.src = component.propValue
     img.alt = component.text
@@ -327,7 +406,10 @@ class BasePageGenerator {
 
   generateRoyBarCode(component) {
     const { index, style, includeText, colorDark } = component
-    let newElement = this.generateNewElementWithStyledComponent(component, index)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      index
+    )
     let img = document.createElement('img')
     img.src = component.propValue
     img.alt = component.text
@@ -356,7 +438,10 @@ class BasePageGenerator {
 
   generateRoyCircle(component) {
     const { index, style } = component
-    let newElement = this.generateNewElementWithStyledComponent(component, index)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      index
+    )
     return {
       element: newElement,
       style
@@ -365,7 +450,10 @@ class BasePageGenerator {
 
   generateRoyStar(component) {
     const { index, style } = component
-    let newElement = this.generateNewElementWithStyledComponent(component, index)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      index
+    )
     const star = document.createElement('span')
     star.classList.add(...['iconfont', 'roy-star-icon', style.icon])
     newElement.appendChild(star)
@@ -377,7 +465,10 @@ class BasePageGenerator {
 
   generateRoyImage(component) {
     const { index, style } = component
-    let newElement = this.generateNewElementWithStyledComponent(component, index)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      index
+    )
     let img = document.createElement('img')
     img.src = component.src
     img.alt = component.title
@@ -397,7 +488,10 @@ class BasePageGenerator {
       this.dataSource
     )
     let rootElement = null
-    let newElement = this.generateNewElementWithStyledComponent(component, zIndex)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      zIndex
+    )
     newElement.style.transform = 'none'
     // newElement.style.border = 'none'
     newElement.innerHTML = `<div class="roy-text-inner">${afterPropValue}</div>`
@@ -409,7 +503,10 @@ class BasePageGenerator {
       newElement.style.left = 0
       newElement.style.top = 0
       outerStyle = parentElement.style
-      rootElement = this.generateNewElementWithStyledComponent(parentElement, zIndex)
+      rootElement = this.generateNewElementWithStyledComponent(
+        parentElement,
+        zIndex
+      )
       rootElement.appendChild(newElement)
       // 富文本高度自动给，然后走分页逻辑
       rootElement.style.height = 'auto'
@@ -435,7 +532,10 @@ class BasePageGenerator {
     let outerStyle = style
     let tableHtml = autoTable.getOriginTableItem()
     let rootElement
-    let newElement = this.generateNewElementWithStyledComponent(component, zIndex)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      zIndex
+    )
     newElement.innerHTML = tableHtml
     newElement.style.width = 'auto'
     if (parentElement) {
@@ -445,7 +545,10 @@ class BasePageGenerator {
       newElement.style.left = 0
       newElement.style.top = 0
       outerStyle = parentElement.style
-      rootElement = this.generateNewElementWithStyledComponent(parentElement, zIndex)
+      rootElement = this.generateNewElementWithStyledComponent(
+        parentElement,
+        zIndex
+      )
       rootElement.style.width = 'auto'
       rootElement.appendChild(newElement)
     } else {
@@ -471,7 +574,10 @@ class BasePageGenerator {
       dataSet: this.dataSet
     })
     let tableItem = autoTable.getOriginTableItem()
-    let newElement = this.generateNewElementWithStyledComponent(component, zIndex)
+    let newElement = this.generateNewElementWithStyledComponent(
+      component,
+      zIndex
+    )
     const { tableStart, tableHead, tableBody, tableEnd } = tableItem
     newElement.innerHTML = `${tableStart}${tableHead}${tableBody}${tableEnd}`
     return {
@@ -506,7 +612,10 @@ class BasePageGenerator {
 
   async renderRoySimpleText({ component, curPageUsedHeight, pageNumber = 1 }) {
     let { element, style } = this.generateRoySimpleText(component)
-    if (curPageUsedHeight && curPageUsedHeight + element.style.height > this.maxPageUseHeight) {
+    if (
+      curPageUsedHeight &&
+      curPageUsedHeight + element.style.height > this.maxPageUseHeight
+    ) {
       pageNumber++
       curPageUsedHeight = this.realPageMarginTop
     }
@@ -525,7 +634,10 @@ class BasePageGenerator {
 
   async renderRoyLine({ component, curPageUsedHeight, pageNumber = 1 }) {
     let { element, style } = this.generateRoyLine(component)
-    if (curPageUsedHeight && curPageUsedHeight + element.style.height > this.maxPageUseHeight) {
+    if (
+      curPageUsedHeight &&
+      curPageUsedHeight + element.style.height > this.maxPageUseHeight
+    ) {
       pageNumber++
       curPageUsedHeight = this.realPageMarginTop
     }
@@ -543,7 +655,10 @@ class BasePageGenerator {
 
   async renderRoyCircle({ component, curPageUsedHeight, pageNumber = 1 }) {
     let { element, style } = this.generateRoyCircle(component)
-    if (curPageUsedHeight && curPageUsedHeight + element.style.height > this.maxPageUseHeight) {
+    if (
+      curPageUsedHeight &&
+      curPageUsedHeight + element.style.height > this.maxPageUseHeight
+    ) {
       pageNumber++
       curPageUsedHeight = this.realPageMarginTop
     }
@@ -561,7 +676,10 @@ class BasePageGenerator {
 
   async renderRoyRect({ component, curPageUsedHeight, pageNumber = 1 }) {
     let { element, style } = this.generateRoyRect(component)
-    if (curPageUsedHeight && curPageUsedHeight + element.style.height > this.maxPageUseHeight) {
+    if (
+      curPageUsedHeight &&
+      curPageUsedHeight + element.style.height > this.maxPageUseHeight
+    ) {
       pageNumber++
       curPageUsedHeight = this.realPageMarginTop
     }
@@ -579,7 +697,10 @@ class BasePageGenerator {
 
   async renderRoyQRCode({ component, curPageUsedHeight, pageNumber = 1 }) {
     let { element, style } = this.generateRoyQRCode(component)
-    if (curPageUsedHeight && curPageUsedHeight + element.style.height > this.maxPageUseHeight) {
+    if (
+      curPageUsedHeight &&
+      curPageUsedHeight + element.style.height > this.maxPageUseHeight
+    ) {
       pageNumber++
       curPageUsedHeight = this.realPageMarginTop
     }
@@ -597,7 +718,10 @@ class BasePageGenerator {
 
   async renderRoyBarCode({ component, curPageUsedHeight, pageNumber = 1 }) {
     let { element, style } = this.generateRoyBarCode(component)
-    if (curPageUsedHeight && curPageUsedHeight + element.style.height > this.maxPageUseHeight) {
+    if (
+      curPageUsedHeight &&
+      curPageUsedHeight + element.style.height > this.maxPageUseHeight
+    ) {
       pageNumber++
       curPageUsedHeight = this.realPageMarginTop
     }
@@ -615,7 +739,10 @@ class BasePageGenerator {
 
   async renderRoyStar({ component, curPageUsedHeight, pageNumber = 1 }) {
     let { element, style } = this.generateRoyStar(component)
-    if (curPageUsedHeight && curPageUsedHeight + element.style.height > this.maxPageUseHeight) {
+    if (
+      curPageUsedHeight &&
+      curPageUsedHeight + element.style.height > this.maxPageUseHeight
+    ) {
       pageNumber++
       curPageUsedHeight = this.realPageMarginTop
     }
@@ -633,7 +760,10 @@ class BasePageGenerator {
 
   async renderRoyImage({ component, curPageUsedHeight, pageNumber = 1 }) {
     let { element, style } = this.generateRoyImage(component)
-    if (curPageUsedHeight && curPageUsedHeight + element.style.height > this.maxPageUseHeight) {
+    if (
+      curPageUsedHeight &&
+      curPageUsedHeight + element.style.height > this.maxPageUseHeight
+    ) {
       pageNumber++
       curPageUsedHeight = this.realPageMarginTop
     }
@@ -655,7 +785,14 @@ class BasePageGenerator {
 
   renderRoyComplexTable() {}
 
-  getTablesSplit({ rows, header = null, footer = null, isDataTable, style, curPageUsedHeight }) {
+  getTablesSplit({
+    rows,
+    header = null,
+    footer = null,
+    isDataTable,
+    style,
+    curPageUsedHeight
+  }) {
     // { tables, overflowPages, maxTableWidth }
     let headerHeight = 0
     let footerHeight = 0
@@ -697,7 +834,9 @@ class BasePageGenerator {
       let curRow = rows[i]
       let cellMaxHeight = 0
       if (isDataTable) {
-        let innerCell = curRow.getElementsByClassName('roy-complex-table-cell-in')
+        let innerCell = curRow.getElementsByClassName(
+          'roy-complex-table-cell-in'
+        )
         for (let cell of innerCell) {
           cellMaxHeight =
             cellMaxHeight < cell.children[0].clientHeight
@@ -709,7 +848,8 @@ class BasePageGenerator {
 
       let lastHeight = curHeight
       curHeight += Math.max(curRow.clientHeight, cellMaxHeight)
-      maxTableWidth = maxTableWidth > curRow.clientWidth ? maxTableWidth : curRow.clientWidth
+      maxTableWidth =
+        maxTableWidth > curRow.clientWidth ? maxTableWidth : curRow.clientWidth
 
       if (curHeight > this.maxPageUseHeight) {
         tables.push({
@@ -789,7 +929,10 @@ class FixedPageGenerator extends BasePageGenerator {
         imgEle.style.height = `${imgData.height}px`
         clonedEmptyNode.appendChild(imgEle)
         pageUsedHeight += imgData.height
-        if (pageUsedHeight > this.maxPageUseHeight && imgData.height <= this.maxPageUseHeight) {
+        if (
+          pageUsedHeight > this.maxPageUseHeight &&
+          imgData.height <= this.maxPageUseHeight
+        ) {
           // 页面超出，需要换新的一页了
           clonedEmptyNode.style.transform = `rotate(${rotate}deg)`
           clonedEmptyNode.style.border = border
@@ -801,7 +944,10 @@ class FixedPageGenerator extends BasePageGenerator {
           clonedEmptyNode = element.cloneNode()
           clonedEmptyNode.style.top = `${this.realPageMarginTop}px`
           clonedEmptyNode.appendChild(imgEle)
-        } else if (imgData.height > this.maxPageUseHeight || i === richTextImgList.length - 1) {
+        } else if (
+          imgData.height > this.maxPageUseHeight ||
+          i === richTextImgList.length - 1
+        ) {
           // 循环就要结束了，或者一个图片太高了
           clonedEmptyNode.style.transform = `rotate(${rotate}deg)`
           clonedEmptyNode.style.border = border
@@ -858,7 +1004,9 @@ class FixedPageGenerator extends BasePageGenerator {
       innerElement.innerHTML = ''
       page.removeChild(element)
       tables.forEach((table, index) => {
-        let cleanChildNode = parentElement ? innerElement.cloneNode() : element.cloneNode()
+        let cleanChildNode = parentElement
+          ? innerElement.cloneNode()
+          : element.cloneNode()
         let cleanParentNode = element.cloneNode()
         if (index > 0) {
           if (parentElement) {
@@ -897,7 +1045,11 @@ class FixedPageGenerator extends BasePageGenerator {
     }
   }
 
-  async renderRoyComplexTable({ component, pageNumber = 1, curPageUsedHeight }) {
+  async renderRoyComplexTable({
+    component,
+    pageNumber = 1,
+    curPageUsedHeight
+  }) {
     const { showPrefix, showHead, showFoot, showSuffix, style } = component
     const {
       prefixTextElement,
@@ -953,8 +1105,12 @@ class FixedPageGenerator extends BasePageGenerator {
     if (height + pageUsedHeight > this.maxPageUseHeight) {
       middleElement.style.top = `${pageUsedHeight}px`
       // 需要分页
-      const trElements = middleElement.getElementsByClassName('roy-complex-table-row')
-      const thElement = middleElement.getElementsByClassName('roy-complex-table-thead')[0]
+      const trElements = middleElement.getElementsByClassName(
+        'roy-complex-table-row'
+      )
+      const thElement = middleElement.getElementsByClassName(
+        'roy-complex-table-thead'
+      )[0]
       const { tables, overflowPages } = this.getTablesSplit({
         rows: trElements,
         header: thElement,
@@ -1029,14 +1185,22 @@ class RelativePageGenerator extends FixedPageGenerator {
     for (let i = 0; i < uniqueElements.length; i++) {
       const curElement = uniqueElements[i]
       const { component } = curElement
-      const { nextPageUsedHeight, nextPageNumber } = await this.getNextRenderInfo(curElement)
-      const { page, pageUsedHeight, pageNumber } = await this[`render${component}`]({
+      const { nextPageUsedHeight, nextPageNumber } =
+        await this.getNextRenderInfo(curElement)
+      const { page, pageUsedHeight, pageNumber } = await this[
+        `render${component}`
+      ]({
         component: curElement,
         curPageUsedHeight: nextPageUsedHeight,
         pageNumber: nextPageNumber
       })
       this.maxPageNum = Math.max(pageNumber, this.maxPageNum)
-      await this.storeRenderedInfo({ page, element: curElement, pageUsedHeight, pageNumber })
+      await this.storeRenderedInfo({
+        page,
+        element: curElement,
+        pageUsedHeight,
+        pageNumber
+      })
     }
   }
 
@@ -1053,23 +1217,27 @@ class RelativePageGenerator extends FixedPageGenerator {
     let minRelativeHeight = {}
     let relativePageHeight = {}
     renderedComponents.forEach((rComp) => {
-      const { name: rCompName, position: rCompPos, realPageHeight, pageNumber = 1 } = rComp
+      const {
+        name: rCompName,
+        position: rCompPos,
+        realPageHeight,
+        pageNumber = 1
+      } = rComp
       // 遍历已经渲染过的每个组件，查看是否与当前组件有相交的关系
       let rCompIsAutoPage = AUTO_PAGE_COMPONENT.includes(rCompName)
       let curCompIsAutoPage = AUTO_PAGE_COMPONENT.includes(curElement.component)
 
       if (curCompIsAutoPage || rCompIsAutoPage) {
-        let { isIntersect, isBlow, relativeHeight } = this.getRelativePositionInfo(
-          rCompPos,
-          position
-        )
+        let { isIntersect, isBlow, relativeHeight } =
+          this.getRelativePositionInfo(rCompPos, position)
         if (isIntersect && isBlow) {
           maxPageNum = Math.max(pageNumber, maxPageNum)
           minRelativeHeight[pageNumber] = Math.min(
             minRelativeHeight[pageNumber] || Infinity,
             relativeHeight
           )
-          relativePageHeight[pageNumber] = minRelativeHeight[pageNumber] + realPageHeight
+          relativePageHeight[pageNumber] =
+            minRelativeHeight[pageNumber] + realPageHeight
         }
       }
     })
@@ -1130,7 +1298,12 @@ const layoutToGenerator = {
   relative: RelativePageGenerator
 }
 
-export function getPageGenerator({ renderElements, pagerConfig, dataSet, dataSource }) {
+export function getPageGenerator({
+  renderElements,
+  pagerConfig,
+  dataSet,
+  dataSource
+}) {
   const { pageLayout = 'fixed' } = pagerConfig
   const Generator = layoutToGenerator[pageLayout]
   return new Generator({ renderElements, pagerConfig, dataSet, dataSource })

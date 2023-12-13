@@ -41,6 +41,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import commonMixin from '@/mixin/commonMixin'
 import RoyModal from '@/components/RoyModal/RoyModal'
 import RoyLoading from '@/components/RoyLoading'
@@ -141,6 +142,7 @@ export default {
         if (renderPageHTML.length) {
           const viewerElement = this.$refs.viewer
           viewerElement.innerHTML = renderPageHTML
+          console.log('renderPageHTML---', renderPageHTML)
           if (this.needToast) {
             toast(this.needToast, 'info', 5000)
           }
@@ -184,8 +186,12 @@ export default {
           format: 'JPEG',
           x: 0,
           y: 0,
-          width: isNormalPage ? this.pageConfig.pageWidth : this.pageConfig.pageHeight,
-          height: isNormalPage ? this.pageConfig.pageHeight : this.pageConfig.pageWidth
+          width: isNormalPage
+            ? this.pageConfig.pageWidth
+            : this.pageConfig.pageHeight,
+          height: isNormalPage
+            ? this.pageConfig.pageHeight
+            : this.pageConfig.pageWidth
         })
       }
       doc.save(`${this.fileName || this.pageConfig.title || '预览'}.pdf`)
