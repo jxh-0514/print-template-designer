@@ -17,7 +17,10 @@
       class="ri-checkbox-blank-circle-line roy-component-adjuster__rotate"
       @mousedown="handleRotate"
     ></span>
-    <span v-show="element.isLock" class="ri-lock-fill roy-component-adjuster__lock"></span>
+    <span
+      v-show="element.isLock"
+      class="ri-lock-fill roy-component-adjuster__lock"
+    ></span>
     <span
       v-show="element.bindValue"
       class="ri-link-unlink-m roy-component-adjuster__bind"
@@ -116,7 +119,9 @@ export default {
       curComponent: (state) => state.printTemplateModule.curComponent
     }),
     pointList() {
-      const isTable = ['RoySimpleTable', 'RoyComplexTable'].includes(this.element.component)
+      const isTable = ['RoySimpleTable', 'RoyComplexTable'].includes(
+        this.element.component
+      )
       if (isTable) {
         return ['b']
       }
@@ -129,7 +134,9 @@ export default {
       return this.active && !this.element.isLock
     },
     showRotate() {
-      return !['RoySimpleTable', 'RoyComplexTable'].includes(this.element?.component || '')
+      return !['RoySimpleTable', 'RoyComplexTable'].includes(
+        this.element?.component || ''
+      )
     },
     adjusterStyle() {
       return {
@@ -247,7 +254,8 @@ export default {
       const centerY = rect.top + rect.height / 2
 
       // 旋转前的角度
-      const rotateDegreeBefore = Math.atan2(startY - centerY, startX - centerX) / (Math.PI / 180)
+      const rotateDegreeBefore =
+        Math.atan2(startY - centerY, startX - centerX) / (Math.PI / 180)
 
       // 如果元素没有移动，则不保存快照
       let hasMove = false
@@ -256,7 +264,8 @@ export default {
         const curX = moveEvent.clientX
         const curY = moveEvent.clientY
         // 旋转后的角度
-        const rotateDegreeAfter = Math.atan2(curY - centerY, curX - centerX) / (Math.PI / 180)
+        const rotateDegreeAfter =
+          Math.atan2(curY - centerY, curX - centerX) / (Math.PI / 180)
         // 获取旋转的角度值
         pos.rotate = startRotate + rotateDegreeAfter - rotateDegreeBefore
         // 修改当前组件样式
@@ -290,7 +299,9 @@ export default {
       e.preventDefault()
 
       const style = { ...this.defaultStyle }
-      const element = this.$el.querySelector(`#roy-component-${this.element.id}`)
+      const element = this.$el.querySelector(
+        `#roy-component-${this.element.id}`
+      )
 
       let newStyle = {
         ...style,
@@ -351,7 +362,9 @@ export default {
           y: (moveEvent.clientY - Math.round(editorRectInfo.top)) / this.scale
         }
 
-        const isTable = ['RoySimpleTable', 'RoyComplexTable'].includes(this.element.component)
+        const isTable = ['RoySimpleTable', 'RoyComplexTable'].includes(
+          this.element.component
+        )
         const isSyncWH = this.element.isSyncWH
 
         calculateComponentPositionAndSize(
@@ -370,7 +383,9 @@ export default {
 
         this.$store.commit('printTemplateModule/setShapeStyle', {
           ...newStyle,
-          height: isSyncWH ? Math.max(newStyle.width, newStyle.height) : newStyle.height,
+          height: isSyncWH
+            ? Math.max(newStyle.width, newStyle.height)
+            : newStyle.height,
           width: isTable
             ? 'auto'
             : isSyncWH
@@ -407,25 +422,34 @@ export default {
       e.preventDefault()
     },
     handleMouseDownOnShape(e) {
+      // 触发组件点击事件
       this.$nextTick(() => eventBus.$emit('componentClick'))
 
+      // 设置编辑器状态为true
       this.$store.commit('printTemplateModule/setInEditorStatus', true)
+      // 设置点击组件状态为true
       this.$store.commit('printTemplateModule/setClickComponentStatus', true)
+      // 如果当前组件禁止拖拽，则阻止默认行为
       if (isPreventDrop(this.element.component)) {
         e.preventDefault()
       }
 
+      // 阻止事件冒泡
       e.stopPropagation()
+      // 设置当前组件
       this.$store.commit('printTemplateModule/setCurComponent', {
         component: this.element,
         index: this.index
       })
+      // 设置调色板计数
       this.$store.commit('printTemplateModule/setPaletteCount')
 
+      // 如果当前组件锁定，则返回
       if (this.element.isLock) {
         return
       }
 
+      // 获取光标位置
       this.cursors = this.getCursor() // 根据旋转角度获取光标位置
     },
     handleMouseMoveItem(e) {
@@ -465,7 +489,13 @@ export default {
           // 后面两个参数代表鼠标移动方向
           // curY - startY > 0 true 表示向下移动 false 表示向上移动
           // curX - startX > 0 true 表示向右移动 false 表示向左移动
-          eventBus.$emit('move', curY - startY > 0, curX - startX > 0, curX, curY)
+          eventBus.$emit(
+            'move',
+            curY - startY > 0,
+            curX - startX > 0,
+            curX,
+            curY
+          )
         })
       }
 

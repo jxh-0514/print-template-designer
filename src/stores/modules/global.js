@@ -108,8 +108,14 @@ export const mutations = {
   setPageConfig(state, pageConfig) {
     state.pageConfig = pageConfig
     store.commit('printTemplateModule/rulerThings/setRect', {
-      w: pageConfig.pageDirection === 'p' ? pageConfig.pageWidth : pageConfig.pageHeight,
-      h: pageConfig.pageDirection === 'p' ? pageConfig.pageHeight : pageConfig.pageWidth
+      w:
+        pageConfig.pageDirection === 'p'
+          ? pageConfig.pageWidth
+          : pageConfig.pageHeight,
+      h:
+        pageConfig.pageDirection === 'p'
+          ? pageConfig.pageHeight
+          : pageConfig.pageWidth
     })
     store.commit('printTemplateModule/rulerThings/setReDrawRuler')
   },
@@ -202,7 +208,12 @@ export const mutations = {
     }
     if (top || left) {
       // FIXME: 只在坐标变化后触发，如果是宽高变化，则在外部的监听器中已经做了处理，这里无需重复执行。
-      store.commit('printTemplateModule/setShapePosition', { top, left, width, height })
+      store.commit('printTemplateModule/setShapePosition', {
+        top,
+        left,
+        width,
+        height
+      })
     }
   },
 
@@ -233,15 +244,24 @@ export const mutations = {
   },
 
   addComponent(state, { component, index }) {
+    console.log('添加组件---', component, index)
     // 初始化 position 信息
     component.position = {
       lx: component.style.left,
       ty: component.style.top,
-      rx: isNaN(component.style.width) ? -Infinity : component.style.left + component.style.width,
-      by: isNaN(component.style.height) ? -Infinity : component.style.top + component.style.height
+      rx: isNaN(component.style.width)
+        ? -Infinity
+        : component.style.left + component.style.width,
+      by: isNaN(component.style.height)
+        ? -Infinity
+        : component.style.top + component.style.height
     }
 
-    if (component.position.rx === -Infinity || component.position.by === -Infinity) {
+    // 如果 rx 和 by 等于 -Infinity，则表示组件没有设置宽高，需要重新计算组件的位置
+    if (
+      component.position.rx === -Infinity ||
+      component.position.by === -Infinity
+    ) {
       setTimeout(() => {
         const comEle = document.getElementById(`roy-component-${component.id}`)
         const rect = comEle.getBoundingClientRect()
@@ -253,6 +273,7 @@ export const mutations = {
       }, 100)
     }
 
+    // 如果 index 存在，则插入到指定位置，否则添加到最后
     if (index !== undefined) {
       state.componentData.splice(index, 0, component)
     } else {
