@@ -1,6 +1,10 @@
 <template>
   <div style="height: 100%">
-    <PtdDesigner ref="designer" :pre-data-set="preDataSet" :pre-data-source="preDataSource">
+    <PtdDesigner
+      ref="designer"
+      :pre-data-set="preDataSet"
+      :pre-data-source="preDataSource"
+    >
       <template v-slot:roy-designer-header-slot>
         <div class="head-slot">
           <i
@@ -34,9 +38,16 @@
       :visible.sync="viewerVisible"
       :need-toast="false"
     />
-    <TemplateViews v-if="templateVisible" :visible.sync="templateVisible" @load="loadTemp" />
+    <TemplateViews
+      v-if="templateVisible"
+      :visible.sync="templateVisible"
+      @load="loadTemp"
+    />
     <div class="fork-me">
-      <a href="https://github.com/ROYIANS/print-template-designer" target="_blank">
+      <a
+        href="https://github.com/ROYIANS/print-template-designer"
+        target="_blank"
+      >
         <i class="ri-github-line"></i>
         Give me a Star!
       </a>
@@ -53,7 +64,11 @@ import { mapState } from 'vuex'
 export default {
   name: 'App',
   async mounted() {
-    await toast('欢迎使用ROYIANS的打印模板设计器，仅个人学习使用', 'success', 3000)
+    await toast(
+      '欢迎使用ROYIANS的打印模板设计器，仅个人学习使用',
+      'success',
+      3000
+    )
     await toast('当前网页预览的是最新开发分支，请留意', 'warning', 3000)
     console.log('contributed by ROYIANS@Little-Dreamland﹢')
   },

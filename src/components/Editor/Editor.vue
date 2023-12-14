@@ -19,7 +19,12 @@
       @onCornerClick="handleCornerClick"
     >
     </SketchRuler>
-    <div id="screens" ref="screensRef" @scroll="handleScroll" @wheel="handleWheel">
+    <div
+      id="screens"
+      ref="screensRef"
+      @scroll="handleScroll"
+      @wheel="handleWheel"
+    >
       <div ref="containerRef" class="screen-container">
         <div
           id="designer-page"
@@ -50,7 +55,12 @@
             />
           </ComponentAdjuster>
           <!-- 选中区域 -->
-          <Area v-show="isShowArea" :height="height" :start="start" :width="width" />
+          <Area
+            v-show="isShowArea"
+            :height="height"
+            :start="start"
+            :width="width"
+          />
           <!-- 标线 -->
           <EditorLine />
           <!-- 上下边距线 -->
@@ -180,14 +190,24 @@ export default {
   },
   computed: {
     ...mapState({
+      // 获取比例尺的宽度
       realScale: (state) => state.printTemplateModule.rulerThings.scale,
+      // 获取矩形的宽度
       rectWidth: (state) => state.printTemplateModule.rulerThings.rectWidth,
+      // 获取矩形的高度
       rectHeight: (state) => state.printTemplateModule.rulerThings.rectHeight,
-      needReDrawRuler: (state) => state.printTemplateModule.rulerThings.needReDrawRuler,
+      // 获取是否需要重新绘制比例尺
+      needReDrawRuler: (state) =>
+        state.printTemplateModule.rulerThings.needReDrawRuler,
+      // 获取是否显示比例尺
       showRuler: (state) => state.printTemplateModule.rulerThings.showRuler,
+      // 获取组件数据
       componentData: (state) => state.printTemplateModule.componentData,
+      // 获取当前组件
       curComponent: (state) => state.printTemplateModule.curComponent,
+      // 获取编辑器
       editor: (state) => state.printTemplateModule.editor,
+      // 获取页面配置
       pageConfig: (state) => state.printTemplateModule.pageConfig
     }),
     contextTheme() {
@@ -346,7 +366,9 @@ export default {
       return this.$store.state.printTemplateModule.nightMode.isNightMode
     },
     panelWidth() {
-      return this.showRight ? 'width: calc(100% - 330px);' : 'width: calc(100% - 95px);'
+      return this.showRight
+        ? 'width: calc(100% - 330px);'
+        : 'width: calc(100% - 95px);'
     }
   },
   methods: {
@@ -443,7 +465,9 @@ export default {
         let style = {}
         if (component.component === 'Group') {
           component.propValue.forEach((item) => {
-            const rectInfo = $(`#roy-component-${item.id}`).getBoundingClientRect()
+            const rectInfo = $(
+              `#roy-component-${item.id}`
+            ).getBoundingClientRect()
             style.left = rectInfo.left - this.editorX
             style.top = rectInfo.top - this.editorY
             style.right = rectInfo.right - this.editorX
@@ -506,7 +530,9 @@ export default {
           return
         }
 
-        const { left, top, width, height } = getComponentRotatedStyle(component.style)
+        const { left, top, width, height } = getComponentRotatedStyle(
+          component.style
+        )
         if (
           x <= left &&
           y <= top &&
@@ -525,11 +551,17 @@ export default {
     },
     handleCornerClick() {},
     handleScroll() {
-      const screensRect = document.querySelector('#screens').getBoundingClientRect()
-      const canvasRect = document.querySelector('#designer-page').getBoundingClientRect()
+      const screensRect = document
+        .querySelector('#screens')
+        .getBoundingClientRect()
+      const canvasRect = document
+        .querySelector('#designer-page')
+        .getBoundingClientRect()
       // 标尺开始的刻度
-      const startX = (screensRect.left + this.thick - canvasRect.left) / this.realScale
-      const startY = (screensRect.top + this.thick - canvasRect.top) / this.realScale
+      const startX =
+        (screensRect.left + this.thick - canvasRect.left) / this.realScale
+      const startY =
+        (screensRect.top + this.thick - canvasRect.top) / this.realScale
 
       this.startX = startX
       this.startY = startY
@@ -538,7 +570,9 @@ export default {
     handleWheel(e) {
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault()
-        const nextScale = parseFloat(Math.max(0.2, this.scale - e.deltaY / 500).toFixed(2))
+        const nextScale = parseFloat(
+          Math.max(0.2, this.scale - e.deltaY / 500).toFixed(2)
+        )
         if (nextScale <= MAX_SCALE && nextScale >= MIN_SCALE) {
           this.setScale(nextScale)
         }
@@ -578,7 +612,8 @@ export default {
           this.rulerWidth = this.$el.offsetWidth
           this.rulerHeight = this.$el.offsetHeight
           this.$refs.screensRef.scrollLeft =
-            this.$refs.containerRef.getBoundingClientRect().width / 2 - this.rectWidth
+            this.$refs.containerRef.getBoundingClientRect().width / 2 -
+            this.rectWidth
           this.reDrawRuler()
         })
       }
@@ -616,7 +651,11 @@ export default {
   padding: 0 !important;
   margin: 0;
   background-color: rgb(255, 255, 255);
-  background-image: linear-gradient(45deg, rgb(247, 247, 247) 25%, transparent 25%),
+  background-image: linear-gradient(
+      45deg,
+      rgb(247, 247, 247) 25%,
+      transparent 25%
+    ),
     linear-gradient(-45deg, rgb(247, 247, 247) 25%, transparent 25%),
     linear-gradient(45deg, transparent 75%, rgb(247, 247, 247) 75%),
     linear-gradient(-45deg, transparent 75%, rgb(247, 247, 247) 75%);
