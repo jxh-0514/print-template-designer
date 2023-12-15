@@ -471,6 +471,7 @@ export default {
         const curX = moveEvent.clientX
         const curY = moveEvent.clientY
         const editorRectInfo = this.editor
+        console.log('组件移动---', this.editor);
         pos.top = Math.min(
           Math.max(0, (curY - startY) / this.scale + startTop),
           editorRectInfo.offsetHeight - adjuster.offsetHeight
